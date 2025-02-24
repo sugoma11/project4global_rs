@@ -1,0 +1,34 @@
+device: ["cuda"]
+num_epochs: [20]
+
+sentinel_number: [2]
+band_order: [["B02", "B03", "B04", "B08", "B05", "B06", "B07", "B08A", "B11", "B12", "B01", "B09"]]
+
+requested_indices: [
+  ["NDVI", "EVI", "NDWI", "GNDVI", "SAVI", "ARVI", "MSAVI"],
+  ["B02", "B03", "B04", "B05", "B06", "B07", "B08", "B08A", "B09", "B11", "B12", "NDVI"], 
+  ["B02", "B03", "B04", "B05", "B06", "B07", "B08", "B08A", "B09", "B11", "B12", "NDVI", "EVI"], 
+  ["B02", "B03", "B04", "B05", "B06", "B07", "B08", "B08A", "B09", "B11", "B12", "NDVI", "EVI", "NDWI"],
+  ["B02", "B03", "B04", "B05", "B06", "B07", "B08", "B08A", "B09", "B11", "B12", "NDVI", "EVI", "NDWI", "GNDVI", "SAVI", "ARVI", "MSAVI"],
+
+  ["B02", "B03", "B04", "NDVI", "EVI", "NDWI", "GNDVI", "SAVI", "ARVI", "MSAVI"],
+
+  ["B05", "B06", "B07", "B08", "B08A", "B09", "B11", "B12", "NDVI", "EVI", "NDWI", "GNDVI", "SAVI", "ARVI", "MSAVI"],
+
+  ["B02", "B03", "B04", "B05", "B06", "B07", "B08", "B08A", "B09", "B11", "B12"]
+
+  ]
+
+
+
+batch_sizes: [64]
+learning_rates: [0.0001]
+step2decay: [15]
+decay_lr: [0.1]
+weight_decay: [0.0001]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+model_names: ["cnns.SmallSequentualCNN", cnns.Resnet1x1, cnns.MLPSmall]
+
+project_name: "How indices improve training on RS data"

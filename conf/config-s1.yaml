@@ -1,0 +1,31 @@
+device: ["cuda"]
+num_epochs: [20]
+
+sentinel_number: [1]
+band_order: [["VV", "VH", "VV-VH"]]
+
+requested_indices: [
+  ["VV", "VH", "VV-VH"],
+  ["VV", "VH", "VV-VH", "RVI"], 
+  ["VV", "VH", "VV-VH", "RVI", "NDPI"], 
+  ["VV", "VH", "VV-VH", "RVI", "NDPI", "CSI"],
+  ["VV", "VH", "VV-VH", "RVI", "NDPI", "CSI", "VSI"],
+
+  ["RVI", "NDPI", "CSI", "VSI"],
+  ["VV", "RVI", "NDPI", "CSI"],
+  ["VV-VH", "RVI", "NDPI", "CSI", "VSI"]
+  ]
+
+
+
+batch_sizes: [64]
+learning_rates: [0.0001]
+step2decay: [15]
+decay_lr: [0.1]
+weight_decay: [0.0001]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+model_names: ["cnns.SmallSequentualCNN", cnns.Resnet1x1, cnns.MLPSmall]
+
+project_name: "How indices improve training on RS data"
