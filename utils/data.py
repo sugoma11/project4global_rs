@@ -7,14 +7,20 @@ class NumpyDataset(Dataset):
     def __init__(self, X: np.array, y: np.array, sentinel_number: int, band_order: list[str], requested_indices: list[str], return_distros=False, full_distrib=None):
 
 
-        self.data = torch.from_numpy(X)
-        self.labels = torch.from_numpy(y)
+        self.s1_means = torch.Tensor([-6.933713050794077, -12.628564056094067, 0.47448312147709354])[None, :, None, None]
+        self.s1_std = torch.Tensor([87.8762246957811, 47.03070478433704, 1.297291303623673])[None, :, None, None]
+
+        self.s2_means = torch.Tensor([231.43385024546893, 376.94788434611434, 241.03688288984037, 2809.8421354087955, 616.5578221193639, 2104.3826773960823, 2695.083864757169, 2969.868417923599, 1306.0814241837832, 587.0608264363341, 249.1888624097736, 2950.2294375352285])[None, :, None, None]
+        self.s2_std = torch.Tensor([123.16515044781909, 139.78991338362886, 140.6154081184225, 786.4508872594147, 202.51268536579394, 530.7255451201194, 710.2650071967689, 777.4421400779165, 424.30312334282684, 247.21468849049668, 122.80062680549261, 702.7404237034002])[None, :, None, None]
+
+        self.data = torch.from_numpy(X).to(dtype=torch.float)
+        self.labels = torch.from_numpy(y).to(dtype=torch.long)
 
 
         assert self.data.shape[0] == self.labels.shape[0]
 
         if full_distrib:
-            self.full_distrib = torch.from_numpy(full_distrib)
+            self.full_distrib = torch.from_numpy(full_distrib).to(dtype=torch.float)
             assert self.full_distrib.shape[0] == self.labels.shape[0]
 
         self.band_order = band_order
@@ -24,12 +30,23 @@ class NumpyDataset(Dataset):
         
         if sentinel_number is 1:
             self.sliced_data = compute_sentinel1_indices(self.data, requested_indices, band_order)
+            self.data = self.st_norm(self.data, self.s1_means, self.s1_std)
+
         else:
             self.sliced_data = compute_sentinel2_indices(self.data, requested_indices, band_order)
+            self.data = self.st_norm(self.data, self.s2_means , self.s2_std)
+
+        self.sliced_data = self.st_norm(self.sliced_data)
 
     def __len__(self):
         return len(self.data)
-        
+    
+    @staticmethod
+    def st_norm(x, means=None, stds=None):
+        if means != None:
+            return (x - means) / (stds + 1e-8)
+        return (x - x.mean(axis=(0,2,3), keepdims=True)) / (x.std(axis=(0,2,3), keepdims=True) + 1e-8)
+
     def __getitem__(self, idx):
         
         if not self.return_distros:

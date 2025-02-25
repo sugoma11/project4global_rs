@@ -1,5 +1,5 @@
 device: ["cuda"]
-num_epochs: [20]
+num_epochs: [30]
 
 sentinel_number: [1]
 band_order: [["VV", "VH", "VV-VH"]]
@@ -18,7 +18,7 @@ requested_indices: [
 
 
 
-batch_sizes: [64]
+batch_sizes: [256]
 learning_rates: [0.0001]
 step2decay: [15]
 decay_lr: [0.1]
@@ -26,6 +26,6 @@ weight_decay: [0.0001]
 seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
-model_names: ["cnns.SmallSequentualCNN", cnns.Resnet1x1, cnns.MLPSmall]
+model_names: ["cnns.SmallSequentualCNN", cnns.Resnet1x1, cnns.MLPSmall, "fc.ArticleMLP"]
 
 project_name: "How indices improve training on RS data"
