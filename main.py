@@ -41,7 +41,6 @@ def train_and_evaluate(experiment_name: str, model_name: str, train_loader: Data
     loss_fn_raw = loss_fn().to(device)
     loss_fn_indiced = loss_fn().to(device)
 
-
     optimizer_raw = optim.AdamW(model_raw.parameters(), lr=lr, weight_decay=weight_decay)
     optimizer_indiced = optim.AdamW(model_indiced.parameters(), lr=lr, weight_decay=weight_decay)
 
@@ -78,8 +77,6 @@ def train_and_evaluate(experiment_name: str, model_name: str, train_loader: Data
             optimizer_raw.step()
             optimizer_indiced.step()
 
-            scheduler_raw.step()
-            scheduler_indiced.step()
 
             _, predicted_raw = torch.max(outputs_raw, 1)
             _, predicted_indiced = torch.max(outputs_indiced, 1)
@@ -115,6 +112,9 @@ def train_and_evaluate(experiment_name: str, model_name: str, train_loader: Data
         # wandb loggining inside
         iter_log.on_epoch_end(epoch)
         print(f"Epoch [{epoch}/{num_epochs}], {iter_log}")
+
+        scheduler_raw.step()
+        scheduler_indiced.step()
 
         train_log.on_epoch_end(iter_log)
     
